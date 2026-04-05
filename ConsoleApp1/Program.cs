@@ -46,5 +46,34 @@ namespace ConsoleApp1
 
             return "";
         }
+
+        private static string CheckPassword(string password, string passwordRepeat)
+        {
+            string defaultPattern = @"^[а-яА-ЯёЁ0-9!@#$%^&*()_+\-=\[\]{};':""\\|,.<>/?]+$";
+            string allSpecSymbols = @"[!@#$%^&*()_+\-=\[\]{};':""\\|,.<>/?]";
+
+            if (string.IsNullOrWhiteSpace(password))
+                return "Пароль не может быть пустым";
+
+            if (password.Length < 7)
+                return "Пароль должен содержать минимум 7 символов";
+
+            if (!Regex.IsMatch(password, defaultPattern))
+                return "Пароль может содержать только кириллицу, цифры и спецсимволы";
+
+            if (!Regex.IsMatch(password, @"[А-ЯЁ]"))
+                return "Пароль должен содержать минимум одну букву в верхнем регистре";
+
+            if (!Regex.IsMatch(password, @"[а-яё]"))
+                return "Пароль должен содержать минимум одну букву в нижнем регистре";
+
+            if (!Regex.IsMatch(password, @"[0-9]"))
+                return "Пароль должен содержать минимум одну цифру";
+
+            if (!Regex.IsMatch(password, allSpecSymbols))
+                return "Пароль должен содержать минимум один спецсимвол";
+
+            return "";
+        }
     }
 }
