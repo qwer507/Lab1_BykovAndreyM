@@ -55,43 +55,43 @@ namespace ConsoleApp1
             List<string> redectedLogins = ["test", "admin", "guest"];
 
             if (string.IsNullOrWhiteSpace(login))
-                return "Логин не может быть пустым";
+                return "Логин не может быть пустым.";
 
             if (!Regex.IsMatch(login, phonePattern) && !Regex.IsMatch(login, emailPattern))
             {
                 if (login.Length < 5)
-                    return "Логин должен содержать минимум 5 символов";
+                    return "Логин должен содержать минимум 5 символов.";
 
                 if (!Regex.IsMatch(login, defaultLoginPattern))
-                    return "Логин может содержать только латиницу, цифры и знак подчеркивания";
+                    return "Логин может содержать только латиницу, цифры и знак подчеркивания.";
 
                 if (redectedLogins.FirstOrDefault(x => x.Equals(login)) != null)
-                    return "Данный логин занят. Пожалуйста, выберите другой";
+                    return "Данный логин занят. Пожалуйста, выберите другой.";
             }
 
             if (string.IsNullOrWhiteSpace(password))
-                return "Пароль не может быть пустым";
-
-            if (password.Equals(passwordRepeat))
-                return "Введены разные пароли";
+                return "Пароль не может быть пустым.";
 
             if (password.Length < 7)
-                return "Пароль должен содержать минимум 7 символов";
+                return "Пароль должен содержать минимум  7 символов.";
 
             if (!Regex.IsMatch(password, defaultPasswordPattern))
-                return "Пароль может содержать только кириллицу, цифры и спецсимволы";
+                return "Пароль может содержать только кириллицу, цифры и спецсимволы.";
 
             if (!Regex.IsMatch(password, @"[А-ЯЁ]"))
-                return "Пароль должен содержать минимум одну букву в верхнем регистре";
+                return "Пароль должен содержать минимум одну букву в верхнем регистре.";
 
             if (!Regex.IsMatch(password, @"[а-яё]"))
-                return "Пароль должен содержать минимум одну букву в нижнем регистре";
+                return "Пароль должен содержать минимум одну букву в нижнем регистре.";
 
             if (!Regex.IsMatch(password, @"[0-9]"))
-                return "Пароль должен содержать минимум одну цифру";
+                return "Пароль должен содержать минимум одну цифру.";
 
             if (!Regex.IsMatch(password, allSpecSymbols))
-                return "Пароль должен содержать минимум один спецсимвол";
+                return "Пароль должен содержать минимум один спецсимвол.";
+
+            if (!password.Equals(passwordRepeat))
+                return "Введены разные пароли.";
 
             return "";
         }
