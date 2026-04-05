@@ -52,6 +52,9 @@ namespace ConsoleApp1
             string defaultPattern = @"^[а-яА-ЯёЁ0-9!@#$%^&*()_+\-=\[\]{};':""\\|,.<>/?]+$";
             string allSpecSymbols = @"[!@#$%^&*()_+\-=\[\]{};':""\\|,.<>/?]";
 
+            if (password.Equals(passwordRepeat))
+                return "Введены разные пароли";
+
             if (string.IsNullOrWhiteSpace(password))
                 return "Пароль не может быть пустым";
 
