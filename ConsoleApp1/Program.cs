@@ -38,24 +38,17 @@ namespace ConsoleApp1
             if (string.IsNullOrWhiteSpace(login))
                 return "Логин не может быть пустым";
 
-            if (Regex.IsMatch(login, emailPattern))
+            if (!Regex.IsMatch(login, phonePattern) && !Regex.IsMatch(login, emailPattern))
             {
-                return "";
-            }
+                if (login.Length < 5)
+                    return "Логин должен содержать минимум 5 символов";
 
-            if (Regex.IsMatch(login, phonePattern))
-            {
-                return "";
+                if (!Regex.IsMatch(login, defaultLoginPattern))
+                    return "Логин может содержать только латиницу, цифры и знак подчеркивания";
+
+                if (redectedLogins.FirstOrDefault(x => x.Equals(login)) != null)
+                    return "Данный логин занят. Пожалуйста, выберите другой";
             }        
-
-            if (login.Length < 5)
-                return "Логин должен содержать минимум 5 символов";
-
-            if (!Regex.IsMatch(login, defaultLoginPattern))
-                return "Логин может содержать только латиницу, цифры и знак подчеркивания";
-
-            if (redectedLogins.FirstOrDefault(x => x.Equals(login)) != null)
-                return "Данный логин занят. Пожалуйста, выберите другой";
 
             if (string.IsNullOrWhiteSpace(password))
                 return "Пароль не может быть пустым";
