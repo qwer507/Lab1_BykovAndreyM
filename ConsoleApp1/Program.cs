@@ -1,5 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Security.Cryptography;
+using Serilog;
 
 namespace ConsoleApp1
 {
@@ -7,6 +10,11 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
+            string template = "{Timestamp:yyyy-MM-dd HH:mm:ss} | [{Level:u3}] | {Message:lj}{NewLine}{Exception}";
+            Log.Logger = new LoggerConfiguration().MinimumLevel.Debug()
+                .WriteTo.Console(outputTemplate: template)
+                .WriteTo.File("logs/file_.txt", outputTemplate: template)
+                .CreateLogger();
             RegUser();
         }
 
@@ -18,11 +26,22 @@ namespace ConsoleApp1
             string? password = Console.ReadLine();
             Console.WriteLine("Введите пароль еще раз: ");
             string? passwordRepeat = Console.ReadLine();
+
+            string maskedPassword = MaskPassword(password);
+            string maskedPasswordRepeat = MaskPassword(passwordRepeat);
             string error = CheckRegInfo(login, password, passwordRepeat);
-            if (string.IsNullOrEmpty(error))
+
+            if (string.IsNullOrEmpty(error) )
+            {
                 Console.WriteLine("True");
+                Log.Information("Логин: {Login} | Пароль: {Password} | Подтверждение: {ConfirmPassword} | Успешная регистрация", login, maskedPassword, maskedPasswordRepeat);
+            }
             else
+            {
                 Console.WriteLine("False");
+                Log.Error("Логин: {Login} | Пароль: {Password} | Подтверждение: {ConfirmPassword} | Ошибка: {Error}", login, maskedPassword, maskedPasswordRepeat, error);
+            }
+
             Console.WriteLine(error);
         }
 
@@ -33,7 +52,7 @@ namespace ConsoleApp1
             string defaultLoginPattern = @"^[a-zA-Z0-9_]+$";
             string defaultPasswordPattern = @"^[а-яА-ЯёЁ0-9!@#$%^&*()_+\-=\[\]{};':""\\|,.<>/?]+$";
             string allSpecSymbols = @"[!@#$%^&*()_+\-=\[\]{};':""\\|,.<>/?]";
-            List<string> redectedLogins = ["test","admin","guest"];
+            List<string> redectedLogins = ["test", "admin", "guest"];
 
             if (string.IsNullOrWhiteSpace(login))
                 return "Логин не может быть пустым";
@@ -48,7 +67,7 @@ namespace ConsoleApp1
 
                 if (redectedLogins.FirstOrDefault(x => x.Equals(login)) != null)
                     return "Данный логин занят. Пожалуйста, выберите другой";
-            }        
+            }
 
             if (string.IsNullOrWhiteSpace(password))
                 return "Пароль не может быть пустым";
@@ -75,6 +94,17 @@ namespace ConsoleApp1
                 return "Пароль должен содержать минимум один спецсимвол";
 
             return "";
+        }
+
+        public static string MaskPassword(string? password)
+        {
+            if (string.IsNullOrEmpty(password))
+                return "***";
+
+            using var sha256 = SHA256.Create();
+            var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            var hashString = Convert.ToBase64String(hash);
+            return hashString;
         }
     }
 }
