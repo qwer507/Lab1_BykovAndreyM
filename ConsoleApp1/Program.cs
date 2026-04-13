@@ -100,7 +100,7 @@ namespace ConsoleApp1
             return "";
         }
 
-        private static string MaskPassword(string? password)
+        public static string MaskPassword(string? password)
         {
             if (string.IsNullOrEmpty(password))
                 return "***";
