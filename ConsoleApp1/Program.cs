@@ -15,10 +15,12 @@ namespace ConsoleApp1
                 .WriteTo.Console(outputTemplate: template)
                 .WriteTo.File("logs/file_.txt", outputTemplate: template)
                 .CreateLogger();
-            RegUser();
+            RegistrationNewUser.RegisterUser();
         }
-
-        private static void RegUser()
+    }
+    public class RegistrationNewUser
+    {
+        public static void RegisterUser()
         {
             Console.WriteLine("Введите логин: ");
             string? login = Console.ReadLine();
@@ -31,7 +33,7 @@ namespace ConsoleApp1
             string maskedPasswordRepeat = MaskPassword(passwordRepeat);
             string error = CheckRegInfo(login, password, passwordRepeat);
 
-            if (string.IsNullOrEmpty(error) )
+            if (string.IsNullOrEmpty(error))
             {
                 Console.WriteLine("True");
                 Log.Information("Логин: {Login} | Пароль: {Password} | Подтверждение: {ConfirmPassword} | Успешная регистрация", login, maskedPassword, maskedPasswordRepeat);
@@ -96,7 +98,7 @@ namespace ConsoleApp1
             return "";
         }
 
-        public static string MaskPassword(string? password)
+        private static string MaskPassword(string? password)
         {
             if (string.IsNullOrEmpty(password))
                 return "***";
