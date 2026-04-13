@@ -15,13 +15,7 @@ namespace ConsoleApp1
                 .WriteTo.Console(outputTemplate: template)
                 .WriteTo.File("logs/file_.txt", outputTemplate: template)
                 .CreateLogger();
-            RegistrationNewUser.RegisterUser();
-        }
-    }
-    public class RegistrationNewUser
-    {
-        public static void RegisterUser()
-        {
+
             Console.WriteLine("Введите логин: ");
             string? login = Console.ReadLine();
             Console.WriteLine("Введите пароль: ");
@@ -29,22 +23,30 @@ namespace ConsoleApp1
             Console.WriteLine("Введите пароль еще раз: ");
             string? passwordRepeat = Console.ReadLine();
 
+            List<String> result = RegistrationNewUser.RegisterUser(login, password, passwordRepeat);
+
+            Console.WriteLine(result[0]);
+            Console.WriteLine(result[1]);
+        }
+    }
+    public class RegistrationNewUser
+    {
+        public static List<String> RegisterUser(string? login, string? password, string? passwordRepeat)
+        {
             string maskedPassword = MaskPassword(password);
             string maskedPasswordRepeat = MaskPassword(passwordRepeat);
             string error = CheckRegInfo(login, password, passwordRepeat);
 
             if (string.IsNullOrEmpty(error))
             {
-                Console.WriteLine("True");
                 Log.Information("Логин: {Login} | Пароль: {Password} | Подтверждение: {ConfirmPassword} | Успешная регистрация", login, maskedPassword, maskedPasswordRepeat);
+                return ["True",error];
             }
             else
             {
-                Console.WriteLine("False");
-                Log.Error("Логин: {Login} | Пароль: {Password} | Подтверждение: {ConfirmPassword} | Ошибка: {Error}", login, maskedPassword, maskedPasswordRepeat, error);
+                Log.Information("Логин: {Login} | Пароль: {Password} | Подтверждение: {ConfirmPassword} | Успешная регистрация", login, maskedPassword, maskedPasswordRepeat);
+                return ["False", error];
             }
-
-            Console.WriteLine(error);
         }
 
         private static string CheckRegInfo(string? login, string? password, string? passwordRepeat)
